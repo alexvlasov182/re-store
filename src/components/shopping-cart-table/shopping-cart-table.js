@@ -1,8 +1,50 @@
 import React from "react";
 
 import "./shopping-cart-table.css";
+import { connect } from "react-redux";
 
-const ShoppingCartTable = () => {
+const ShoppingCartTable = ({
+  items,
+  total,
+  onIncrease,
+  onDecrease,
+  onDelete,
+}) => {
+  const renderRow = (item, idx) => {
+    const { id, title, count, total } = item;
+    return (
+      <tbody key={id}>
+        <tr key={id}>
+          <td>{idx + 1}</td>
+          <td>{title}</td>
+          <td>{count}</td>
+          <td>${total}</td>
+
+          <td>
+            <button
+              onClick={() => onDelete(id)}
+              className="btn btn-outline-danger btn-sm float-right"
+            >
+              <i className="fa fa-trash-o" />
+            </button>
+            <button
+              onClick={() => onIncrease(id)}
+              className="btn btn-outline-success btn-sm float-right"
+            >
+              <i className="fa fa-plus-circle" />
+            </button>
+            <button
+              onClick={() => onDecrease(id)}
+              className="btn btn-outline-warning btn-sm float-right"
+            >
+              <i className="fa fa-minus-circle" />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    );
+  };
+
   return (
     <div className="shopping-cart-table">
       <h2>My next Book</h2>
@@ -16,65 +58,33 @@ const ShoppingCartTable = () => {
             <th>Action</th>
           </tr>
         </thead>
-
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Efficient Go</td>
-            <td>2</td>
-            <td>$55.28</td>
-            <td>
-              <button className="btn btn-outline-danger btn-sm float-right">
-                <i className="fa fa-trash-o" />
-              </button>
-              <button className="btn btn-outline-success btn-sm float-right">
-                <i className="fa fa-plus-circle" />
-              </button>
-              <button className="btn btn-outline-warning btn-sm float-right">
-                <i className="fa fa-minus-circle" />
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Go Programming Language</td>
-            <td>2</td>
-            <td>$29.49</td>
-            <td>
-              <button className="btn btn-outline-danger btn-sm float-right">
-                <i className="fa fa-trash-o" />
-              </button>
-              <button className="btn btn-outline-success btn-sm float-right">
-                <i className="fa fa-plus-circle" />
-              </button>
-              <button className="btn btn-outline-warning btn-sm float-right">
-                <i className="fa fa-minus-circle" />
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Clean Code</td>
-            <td>2</td>
-            <td>$29.09</td>
-            <td>
-              <button className="btn btn-outline-danger btn-sm float-right">
-                <i className="fa fa-trash-o" />
-              </button>
-              <button className="btn btn-outline-success btn-sm float-right">
-                <i className="fa fa-plus-circle" />
-              </button>
-              <button className="btn btn-outline-warning btn-sm float-right">
-                <i className="fa fa-minus-circle" />
-              </button>
-            </td>
-          </tr>
-        </tbody>
+        {items.map(renderRow)}
       </table>
 
-      <div className="total">Total: $113.86</div>
+      <div className="total">Total: ${total}</div>
     </div>
   );
 };
 
-export default ShoppingCartTable;
+const mapStateToProps = ({ cartItems, orderTotal }) => {
+  return {
+    items: cartItems,
+    total: orderTotal,
+  };
+};
+
+const mapDispatchToProps = () => {
+  return {
+    onIncrease: (id) => {
+      console.log(`Increase ${id}`);
+    },
+    onDecrease: (id) => {
+      console.log(`Decrease ${id}`);
+    },
+    onDelete: (id) => {
+      console.log(`Delete ${id}`);
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShoppingCartTable);
