@@ -1,6 +1,5 @@
 import React from "react";
 import "./book-list-item.css";
-import { Link } from "react-router-dom";
 
 const BookListItem = ({ book }) => {
   const { title, author, price, coverImage } = book;
